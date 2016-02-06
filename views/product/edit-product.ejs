@@ -1,0 +1,45 @@
+<%- layout('layout') -%>
+
+<div class="row">
+  <div class="col-lg-6 col-md-offset-3">
+
+    <form method="post" enctype="multipart/form-data">
+      <h1>Product Edit</h1>
+
+      <p><select size="1" name="category_id" required>
+          <option disabled>Choose category</option>
+          <% for (var i = 0; categories.length > i; i++ ) { %>
+          <option required
+                  value="<%= categories[i].id %>"><%= categories[i].name %></option>
+          <% } %>
+        </select></p>
+
+      <div class="form-group">
+        <label="name">Name:</label>
+        <input type="text" value="<%= product.name %>" class="form-control" name="name">
+      </div>
+
+      <div class="form-group">
+        <label="prise">Price:</label>
+        <input type="number" value="<%= product.price %>" class="form-control" name="price">
+      </div>
+
+      <div class="form-group">
+        <div class="form-group">
+          <img src="<%= product.image %>" width="304" height="236">
+
+        </div>
+        <div class="form-group">
+          <label="product_image">Image:</label>
+          <input type="file" name="file" value="<%= product.image %>" accept="image/*">
+        </div>
+
+
+      </div>
+
+
+      <button type="submit" class="btn btn-success">Submit</button>
+    </form>
+
+  </div>
+</div>
