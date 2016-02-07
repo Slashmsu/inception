@@ -6,11 +6,11 @@ var Product = require('../models/product');
 
 router.post('/search', function(req, res, next) {
   console.log(req.body.search_term);
-  Category.findOne({ name: req.body.search_term }, function(err, result) {
+  Category.find({ name: / + req.body.search_term + /}, function(err, result) {
     console.log(result);
     if (err) return next(err);
     Product
-        .find({ category: result})
+        .find({ category: result[0]})
         .populate('category')
         .exec(function(err, results) {
           if (err) return next(err);

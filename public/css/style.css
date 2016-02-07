@@ -1,7 +1,18 @@
 body {
-  padding-top: 100px;
+  padding-top: 51px;
 }
 
 #navbar-gap {
   margin-top: -2%;
+}
+
+div.c-wrapper{
+  width: 100%; /* for example */
+  margin: auto;
+}
+
+.carousel-inner > .item > img,
+.carousel-inner > .item > a > img{
+  width: 100%; /* use this, or not */
+  margin: auto;
 }
