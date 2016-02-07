@@ -88,7 +88,6 @@ var productRepository = require('../repository/ProductRepository');
     });
 
     router.get('/', function(req, res, next) {
-
         res.render('main/home');
     });
 
