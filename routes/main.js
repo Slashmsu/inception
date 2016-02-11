@@ -122,8 +122,12 @@ var ProductRepository = require('../repository/ProductRepository');
       }
     });
 
-    router.get('/', function(req, res) {
+    router.get('/', function(req, res, next) {
+      if (req && req.user) {
+        paginate(req, res, next);
+      } else {
         res.render('main/home');
+      }
     });
 
     router.get('/page/:page', function(req, res, next) {
