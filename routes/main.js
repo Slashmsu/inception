@@ -122,7 +122,7 @@ var ProductRepository = require('../repository/ProductRepository');
       }
     });
 
-    router.get('/', function(req, res, next) {
+    router.get('/', function(req, res) {
         res.render('main/home');
     });
 
