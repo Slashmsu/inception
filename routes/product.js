@@ -4,6 +4,8 @@ var router = require('express').Router();
 var crypto = require("crypto");
 var mime = require('mime');
 
+var ProductRepository = require('../repository/ProductRepository');
+
     //====================================
     // Private functions
     //====================================
@@ -34,15 +36,14 @@ var mime = require('mime');
 //======================================================================================================================
 
     router.get('/products/:id', function(req, res, next) {
-        Product
-            .find({ category: req.params.id })
-            .populate('category')
-            .exec(function(err, products) {
-                if (err) return next(err);
-                res.render('main/category', {
-                    products: products
-                });
+        var MongooseFilter = require('../services/service-models/MongooseFilter');
+        MongooseFilter.category_id = req.params.id;
+
+        ProductRepository.findAllByCategoryId(MongooseFilter, next, function(products) {
+            res.render('main/category', {
+                products: products
             });
+        });
     });
 
 //======================================================================================================================
@@ -50,15 +51,14 @@ var mime = require('mime');
 //======================================================================================================================
 
     router.get('/product/:id', function(req, res, next) {
-        Product
-            .findById({ _id: req.params.id })
-            .populate('category')
-            .exec(function(err, product) {
-                if (err) return next(err);
-                res.render('product/product', {
-                    product: product
-                });
+        var MongooseFilter = require('../services/service-models/MongooseFilter');
+        MongooseFilter.id = req.params.id;
+
+        ProductRepository.findById(MongooseFilter, next, function(product) {
+            res.render('product/product', {
+                product: product
             });
+        });
     });
 
 //======================================================================================================================
@@ -97,17 +97,16 @@ var mime = require('mime');
 // Edit product
 //======================================================================================================================
 
-    router.get('/edit-product/:id', function(req, res){
-        Product
-            .findOne({ _id: req.params.id })
-            .populate('category')
-            .exec(function(err, product) {
+    router.get('/edit-product/:id', function(req, res, next){
+        var MongooseFilter = require('../services/service-models/MongooseFilter');
+        MongooseFilter.id = req.params.id;
 
-                if (err) return next(err);
-                res.render('product/edit-product', {
-                    product: product
-                });
+        ProductRepository.findById(MongooseFilter, next, function(product) {
+            res.render('product/edit-product', {
+                product: product
             });
+        });
+
     });
 
     router.post('/edit-product/:id', uploading.single('file'), function(req, res, next){
@@ -138,6 +137,18 @@ var mime = require('mime');
                 });
         else
             res.redirect('/');
+    });
+
+//======================================================================================================================
+// Remove product
+//======================================================================================================================
+
+    router.get('/remove-product/:id', function(req, res) {
+
+        ProductRepository.removeById(req.params.id, function() {
+            res.render('main/home');
+        });
+
     });
 
 //======================================================================================================================

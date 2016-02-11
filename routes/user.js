@@ -1,8 +1,11 @@
 var router = require('express').Router();
 var User = require('../models/user');
+var Cart = require('../models/cart');
+var async = require('async');
 var passport = require('passport');
 var passportConf = require('../config/passport');
 
+var UserRepository = require('../repository/UserRepository');
 
 //======================================================================================================================
 // Login page
@@ -25,10 +28,9 @@ router.post('/login', passport.authenticate('local-login', {
 
     router.get('/profile', function(req, res, next){
         if(req.user)
-          User.findOne({ _id: req.user._id}, function(err, user){
-            if (err) return next(err);
+            UserRepository.findById(req.user._id, next, function (user) {
                 res.render('account/profile', {user: user});
-          });
+            });
         else
             res.redirect('/');
     });
@@ -44,31 +46,41 @@ router.post('/login', passport.authenticate('local-login', {
     });
 
     router.post('/signup', function(req, res, next){
-        var user = new User();
 
-        user.profile.name = req.body.name;
-        user.profile.picture = user.gravatar();
-        user.password = req.body.password;
-        user.email = req.body.email;
+        async.waterfall([
+            function (callback) {
+                var user = new User();
 
-        User.findOne({ email: req.body.email }, function(err, existingUser){
-          if(existingUser) {
-            console.log(req.body.email + " is already exist");
-            req.flash('errors', 'Account with that email address already exist');
-            return res.redirect('/signup');
-          } else {
-            user.save(function(err, user) {
-              if(err) return next(err);
+                user.profile.name = req.body.name;
+                user.profile.picture = user.gravatar();
+                user.password = req.body.password;
+                user.email = req.body.email;
 
-              req.logIn(user, function(err) {
-                if (err) return next(err);
-                res.redirect('/profile');
-
-              });
-            });
-          }
-
-        })
+                User.findOne({ email: req.body.email }, function(err, existingUser){
+                    if(existingUser) {
+                        console.log(req.body.email + " is already exist");
+                        req.flash('errors', 'Account with that email address already exist');
+                        return res.redirect('/signup');
+                    } else {
+                        user.save(function(err, user) {
+                            if(err) return next(err);
+                            callback(null, user);
+                        });
+                    }
+                })
+            },
+            function (user) {
+                var cart = new Cart();
+                cart.owner = user._id;
+                cart.save(function (err) {
+                    if(err) return next(err);
+                    req.logIn(user, function(err) {
+                      if (err) return next(err);
+                      res.redirect('/profile');
+                    });
+                });
+            }
+        ]);
     });
 
 //======================================================================================================================

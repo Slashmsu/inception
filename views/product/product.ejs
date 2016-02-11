@@ -1,6 +1,6 @@
 <% layout('layout') -%>
 
-<div class="container">
+<div class="container" xmlns="http://www.w3.org/1999/html">
   <div class="row">
 
     <div class="col-md-4">
@@ -18,7 +18,32 @@
       <h3><%= product.name %></h3>
       <label>Price:</label>
       <h1><%= product.price %></h1>
+      <form method="post" action="/add-product-to-cart/<%= +product._id %>">
+          <div class="btn-group" role="group" aria-label="...">
+            <input type="hidden" name="quantity" id="quantity" value="1">
+            <button type="button" id="minus" class="btn btn-default">-</button>
+            <button type="button" id="total" class="btn btn-default">1</button>
+            <button type="button" id="plus" class="btn btn-default">+</button>
+          </div>
+
+          <div class="form-group">
+            <input type="hidden" name="product_id" id="quantity" value="<%= product._id %>">
+            <input type="hidden" name="priceHidden" id="priceHidden" value="<%= product.price %>">
+
+            <input type="text" name="item" class="form-control" value="<%= product.name %>">
+            <input type="text" name="priceValue" id="priceValue" class="form-control" value="<%= product.price %>">
+          </div>
+
+        <% if(user) {%>
+          <button type="submit" class="btn btn-primary btn-lg">Add to Cart</button>
+        <% } else { %>
+          <a href="/signup" class="btn btn-warning btn-lg">Signup to begin buying!</a>
+        <% }%>
+
+      </form>
+
       <a href="/edit-product/<%= product._id %>" class="btn btn-primary btn-lg">Edit Product</a>
+      <a href="/remove-product/<%= product._id %>" class="btn btn-danger btn-lg">Remove Product</a>
     </div>
 
   </div>

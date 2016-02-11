@@ -16,3 +16,7 @@ div.c-wrapper{
   width: 100%; /* use this, or not */
   margin: auto;
 }
+
+.product-image {
+  width: 100%;
+}

@@ -4,8 +4,9 @@
 
 module.exports = {
    filter: {
-      _id: String,
+      id: String,
       name: String,
-      price: Number
+      price: Number,
+      category_id: String
   }
 };
