@@ -1,5 +1,4 @@
 var router = require('express').Router();
-var User = require('../models/user');
 var Product = require('../models/product');
 var Category = require('../models/category');
 var Cart = require('../models/cart');
